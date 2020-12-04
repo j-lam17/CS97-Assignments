@@ -1,0 +1,88 @@
+To create the check target, I went into the Makefile and added a check
+target. The necessary prerequisites for this target were a test.sh,
+file which I took from my discussion LAs, and the randall compiled
+file. The test.sh checks if the number of outputted amount of randall
+is equal to the inputter number. 
+
+test: test.sh randall
+      ./test.sh
+
+For the randall target in the Makefile, I added the compilation of all
+the .c files used in the randall file. So it compiles all of them,
+since they need to be linked to the randall.c file.
+
+To modularize the files, I took related files, and added them to the
+.c files which I thought they belonged in. I added the function
+declarations to the .h files, and included only the necessary
+libraries for both .c and .h. I commented the variables and functions
+that I moved to library files that I created, leaving only the main
+section alone at first. 
+
+To ensure that I correctly moved the files from the original randall.c
+file to the library files, I called "make check" which tested that the
+randall function still operated as the original, and when it outputted
+nothing, that indicated that it was successful. 
+
+In my options.h, I created a structure which would store all of the
+various input options from the user. I defined two enums, the first
+Method one which could map the various input options. The Write one
+mapped the possible output methods, either stdio or a buffer of N kB. 
+
+struct options {
+    bool valid; // checking if input is valid
+    long long nbytes; // number of bytes to produce
+    enum Method type_rng; // way to generate the random sequence
+    char* r_src; // string that holds file path if necessary
+    enum Write output; // where to output data
+    int block_size; // outputted buffer size in kB
+  };
+
+In options.c, I parsed through the user input with getopt in my
+parsing function. Initially,from the starter code we were given,
+I modified it so it stored the last inputted string as the number
+of random bytes to output. Also, I
+kept the section of the code that specified whether the input was
+valid, having atleast 2 arguments and one them being the number of
+bytes. Then, after the valid condition is satisfied, then I enter a
+while loop using getopt to look for potential inputs of -i and -o. If
+the option_index is an 'i', then I check whether it is, "rdrand",
+"mrand48_r", or a string that begins with a "/". Whichever string
+matches, the opts.type_rng is updated to reflect that value. If the
+string begins with a slash, then that string is stored as a path to be
+used in creating random bytes. For the -o flag, it checks either if a
+number is provided, or the string is stdio, storing the string result
+as an option. If for either flag, the string is invalid, the code
+exits with value 1 and prints an error.
+
+Using the options struct, I can access the parsed options that I found
+from my parsing function. The first group of conditionals decides how
+the numbers should be generated, using the opts.type_rng property
+within a switch statement. This sets the initialize(), rand64(), and
+finalize() pointers to be used for random byte generation. The
+intialize function for rand64-sw.c has a char* argument, where it can
+accept the path provided to be used as a source for randomness.
+
+My mrand48_rng function takes in a pointer to a struct drand48_data to
+be used for the generation of random bytes. Then, it combines the two
+unsigned long ints to become a single unsigned long long int. This is
+because the mrand48_r function only outputs 32 randomized bits, so
+they are combined after one is shifted to create a 64 bit random
+unsigned long long int. 
+
+Finally, to determine the output method, I again use the opts->output,
+in a group of conditionals that check whether to use a specific buffer
+size or the stdio. If a buffer size is mentioned, then I used malloc
+to allocate a buffer of 1024 * block_size since it has to be in
+kilobytes. Then, using a do-while loop, I check whether the number of
+bytes remaining to be printed from nbytes is greater than or less than
+the number of bytes to be created from the rand64 () function. If it
+is greater, then a for loop lops over N times so that the buffer can
+be completely filled before being printed out. A similar process
+occurs if stdio is the designated method for outputting the randomized
+bytes. Also, after the buffer has been printed, the buffer is freed to
+not consume too much memory as a result of many function calls.
+
+After this, I started adding error statements for potential errors
+that could arise from the functions being called, or the input from
+the user. If users input any unknown strings for either -i or -o, the
+function exits with a 1 and provides an error message. 

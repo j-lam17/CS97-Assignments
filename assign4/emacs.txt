@@ -1,0 +1,27 @@
+For the merge point M 7dd52bfd8e503316b4aa9c5767850d3985626b26, I see that
+it is merging two different changes, one for improved documentation
+by Eli Zaretskii and one added note by Stefan Kangas. Glen Morris 
+has merged them together. The children are the two noted nodes, and the 
+child is fixing bad dimensions by J. Scott Berg. The bottom right
+subwindow is for comments, bottom left is for the output of the git diff
+command, upper right is the DAG for the repo, and the upper right and 
+middle are time stamps and authors of the changes.
+
+Legend for emacs-graph.pdf
+
+C - c00606171f88be0df2c19346fa53f401ea71c71f
+D - 0ed0dac0ca501a9f328c332a7993bf0624c3873c
+E - 2f45054208ccc3fbd53b7f4d6bbaba92afa075cl
+F - 3ac3a6503ebcfnae6e179d92e1d168a4d440eal
+G - 65078e0a760950783e56f6765465a59bd642e8e4
+H - 7d598e281d15522b64a8807e6805e715c581f12f
+I - f539ee9042f6eb30eecf928effab715396144744
+J - 47b8alc7672608f220c3e0d7f6cedc63e6f63386
+K - ffd201c47e8e32b10961il5679fd8860fba411fde
+L - 18c0e2Obea07cf4591b45800205cf25a927045f6
+M - 7dd52bfd8e503316b4aa9c5767850d3985626b26
+
+Differences between GMU Emacs git repo & ~eggert/src/gnu/emacs
+I executed the git branch command in the ~eggert/src/gnu/emacs and also in my cloned Emacs repo. In the 
+~eggert emacs directory, there are many additional files with the "* master" one, as opposed to the 
+single "* master" file in my cloned repo. 

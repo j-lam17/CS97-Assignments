@@ -1,0 +1,239 @@
+Add a conditional for the stepNumber property of the Game state, which doesn't
+place any more markers once stepNumber > 6
+if (calculateWinner(squares) || squares[i] || this.state.stepNumber > 5) {
+      return;
+    }
+
+Created a moveMarker property of Game state which tells board when to move
+pieces from one spot to another, instead of placing anymore
+moveMarker: false,
+// uses current step number, not the updated one since its in the
+// setState function
+
+Created an updateBoard property which lets the game know when a change
+has been made to the board, distinguishing from the clicks to move pieces
+around, gets updated to alternate so the first click to decide which piece
+to move doesn't update the board or history array
+updateBoard: 1
+
+created a movingMarkerId property which keeps track of which piece to move,
+which is called later to actually move that piece, stores the index
+of the piece that is going to be moved
+moveMarkerId: null
+
+created a winningMoves property which is updated in the condition where the
+player has a piece in the central square, stores all of the possible indices
+for a specific piece that will result in a win
+winningMoves: null
+
+created a winningMove function, which is provided the current board, 
+the piece you want to move, and the players turn, outputting any potential
+indices which would result in a win, only called when a piece in the center
+function winningMove(squares, turn, movingId){
+  // finding all the legal moves and putthing them in a list
+  let possible=[];
+  let legal = acceptableMoves(movingId);
+  for(var p=0; p<legal.length; p++){
+    if (squares[legal[p]] === null){
+      possible.push(legal[p]);
+    }
+  }
+  let winning=[];
+  for (p=0; p < possible.length; p++){
+    let t = squares.slice();
+    t[movingId] = null;
+    t[possible[p]]=turn ? 'X' : 'O';
+    if (calculateWinner(t) !== null){
+      winning.push(possible[p]);
+    }
+  }
+  if (winning.length===0){
+    return null;
+  } else {
+    return winning;
+  }
+}
+
+created a function acceptableMoves which is provided an index from the board,
+and returns an array of any possible moves from that position, precomputed
+for each individual position
+function acceptableMoves(i){
+  let moves;
+  if (i===0){
+    moves = [1,3,4];
+  } else if(i===1){
+    moves=[0,2,3,4,5];
+  } else if(i===2){
+    moves=[1,4,5];
+  } else if(i===3){
+    moves=[0,1,4,6,7];
+  } else if(i===4){
+    moves=[0,1,2,3,5,6,7,8];
+  } else if(i===5){
+    moves=[1,2,4,7,8];
+  } else if(i===6){
+    moves=[3,4,7];
+  } else if(i===7){
+    moves=[3,4,5,6,8];
+  } else{
+    moves=[4,5,7];
+  }
+  return moves;
+}
+
+had an issue with using time machine and also having to place more pieces,
+so I created a conditional statement, where if the moveMarker propoerty was
+false, meaning I was still placing pieces, the setState function
+would set the updateBoard property to be 1 as long as there were not 6 pieces
+on the board
+if (!this.state.moveMarker){
+      if (calculateWinner(squares) || squares[i]) {
+        return;
+      } else{
+        squares[i] = this.state.xIsNext ? 'X' : 'O';
+        this.setState({
+          updateBoard: Boolean(this.state.stepNumber===5) ? 0 : 1,
+        });
+      }
+    }
+
+As a second phase of the game, where I moved around the pieces on the board
+instead of placing new ones, I had an else statement after the conditional 
+if (!this.state.moveMarker), which would handle when the player hadn't
+chosen which piece to move. Also, there were conditinals such as if the chosen
+square was empty, or the same square as the moveMarkerId was chosen, or
+the game had already been won
+ if (squares[i]==null && this.state.moveMarkerId==null ||
+        this.state.moveMarkerId===i || calculateWinner(squares)){
+        return;
+      }
+
+If a piece to be mvoed hasn't been chosen by the player, then then I check
+if the piece they have chosen is the same as the player's turn, doing nothing
+if they choose one that doesn't match
+ex) player X's turn and they can only choose an X
+else if (this.state.moveMarkerId==null){
+        let match = Boolean(squares[i] === (this.state.xIsNext ? 'X' : 'O'));
+        if (!match){
+          return;
+        }
+
+After this condition has passed, I'm now checking if the central square is
+being occupied by the current player, if so, I'm checking if the central
+square is chosen as the piece to move, or that the piece they decide on can
+be moved to a winning position. Also, I check that there exists any possible
+moved from that position given the current state of the board, using the
+acceptableMoves function and seeing if any of those indices are null
+let good = false;
+let next = this.state.xIsNext ? 'X' : 'O';
+let central = squares[4] === next; // T
+let legal = acceptableMoves(i);
+// check for possible moves
+for(var p=0; p<legal.length; p++){
+  let pos = legal[p];
+  if (squares[pos] === null){
+    good = true;
+  }
+}
+
+There is another set of if conditions, specifically checking the 
+potential winning moves of a certain piece if that player occupies the center
+let win = null;
+        if (central && i!==4){
+          win = winningMove(squares, this.state.xIsNext, i);
+          if (win==null){
+            return;
+          }
+        }
+
+If the central piece is filled by the current player, and there exists 
+a winning move for the chosen piece, then it will update the properties
+of the state, setting moveMarkerId: i, winningMoves: win, updateBoard: 1
+
+The only change in the following else for is that winningMoves is set to null
+if the player doesn't meet the central conditions and has legal moves to make
+if (good){
+          this.setState({
+            moveMarkerId: i,
+            winningMoves: null,
+            updateBoard: 1,
+          });
+          return;
+          }
+
+There is an else when the game mode is in moveMarker mode, and the 
+moveMarkerId is defined to a value instead of a null. Check if the desired
+move index is null, can't contain any pieces in it. Also check if that
+move is a legal move as outlined in the acceptableMoves function, or it would
+be possible to move in another fashion besides diagonal, horizontal, or
+vertical
+let good = false;
+let legal = acceptableMoves(this.state.moveMarkerId);
+for (p=0; p < legal.length; p++){
+  if (legal[p]===i && squares[legal[p]]===null){
+    good = true;
+    break;
+  }
+}
+
+If there exists a winning move, then check if the chosen index matches one of
+the winning moves, this only occurs when a winningMove array has been defined
+if (this.state.winningMoves != null){
+          // need to have this conditon satisfied if the cenbtral square is
+          // filled, not relying on move exists
+          good = false;
+          for (p=0; p < this.state.winningMoves.length; p++){
+            if (this.state.winningMoves[p] === i){
+              good = true;
+            }
+          }
+}
+The good variable can be set in two places, in 2 places, either in the 
+legal section, or in the winningMoves section, and if either section is true,
+then the move is acceptable and can therefore be performed using the
+setState method. If the move is invalid, then do nothing.
+if (good){
+          let temp = squares[this.state.moveMarkerId];
+          squares[this.state.moveMarkerId] = null;
+          squares[i] = temp;
+          this.setState({
+              moveMarkerId: null,
+              updateBoard: 0,
+          });
+        }
+        else{
+          return;
+        }
+
+For the actual updating the board from the logic changes made in the
+handeClick function, I use the property updateBoard to determine when I 
+should actually concatenate those changes to the history array
+if (this.state.updateBoard){
+      this.setState({
+        history: history.concat([{
+          squares: squares
+        }]),
+        stepNumber: history.length,
+        xIsNext: !this.state.xIsNext,
+        moveMarker: this.state.stepNumber + 1 > 5,
+        // uses current step number, not the updated one since its in the
+        // setState function
+      });
+    }
+
+I updated the jumpTo function to also update the properties moveMarker,
+moveMarkerId, and updateBoard, so the game can revert exactly as it was
+during that turn, where they can redecide which piece they want to move
+or where they want to place the piece
+jumpTo(step) {
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step%2) === 0,
+      moveMarker: step > 5,
+      moveMarkerId: null,
+      updateBoard: 1,
+    });
+  }
+
+
+

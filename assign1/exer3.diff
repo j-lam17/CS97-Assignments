@@ -1,0 +1,112 @@
+--- exer1.html	2020-10-01 19:21:19.334126000 -0700
++++ exer3.html	2020-10-05 10:07:34.146713000 -0700
+@@ -1,7 +1,7 @@
+ <!DOCTYPE html>
+ <!-- saved from url=(0065)https://web.cs.ucla.edu/classes/fall20/cs97-1/assign/assign1.html -->
+ <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+-<title>Assignment 1. Files and shell scripting</title>
++<title>Assignment 42. Files and shell scripting</title>
+ 
+ <link rel="author" href="mailto:eggert@cs.ucla.edu">
+ <link rel="license" href="https://web.cs.ucla.edu/classes/fall20/cs97-1/assign/copyright.html">
+@@ -9,7 +9,7 @@
+ 
+ <body>
+ 
+-<h1>Assignment 1. Editing and scripting</h1>
++<h1>Assignment 42. Editing and scripting</h1>
+ 
+ <p><small>[<a href="https://web.cs.ucla.edu/classes/fall20/cs97-1/index.html">97 home</a> &gt; <a href="https://web.cs.ucla.edu/classes/fall20/cs97-1/assign.html">assignments</a>]</small></p>
+ 
+@@ -34,7 +34,7 @@
+   Tutorial Introduction to GNU Emacs</a> (2009)</li>
+ </ul>
+ 
+-<!-- diff，在UNIX系統上的一個工具程式，它可以比較兩個檔案之間的不同。通常它被用來比較同一個檔案，在不同版本間的差異。它可以產生一個擴展名為.diff或.patch的檔案，這個檔案可以被另一個工具程式patch來使用。-->
++
+ 
+ <p>Instructions:
+ Do the lab part of this assignment (including all shell commands and editing)
+@@ -85,6 +85,7 @@
+ above steps, without using the arrow keys.</li>
+ <li>When you are done, exit Emacs.</li>
+ </ol>
++
+ </section>
+ 
+ <section>
+@@ -124,7 +125,7 @@
+ <li>Use Emacs to edit the file <samp>exer3.html</samp>.</li>
+ 
+ <li>Change the first two instances of "Assignment 1" to "Assignment 42".</li>
+-<li>Change the first instance of "UTF-8" to "US-ASCII".</li>
++<li>Change the first instance of "US-ASCII" to "US-ASCII".</li>
+ <li>Ooops! The file is not ASCII so you need to fix that. Remove every
+   line containing a non-ASCII character. You can find the next
+   non-ASCII character by searching for the regular
+@@ -158,7 +159,7 @@
+ <li>Repeat the process, until the earlier part of the file is identical
+ to what was in the original.</li>
+ <li>Delete the last part of the file, which contains the diff output.</li>
+-<li>… except we didn't really want to do that, so undo the deletion.</li>
++
+ 
+ <li>Turn the diff output into a comment, by surrounding it with
+   "<samp>&lt;!--</samp>" and "<samp>--&gt;</samp>".
+@@ -321,7 +322,7 @@
+   input being closed,
+   and put the program's standard output and error into
+   <samp>hello-b1</samp> and <samp>hello-b2</samp>, respectively.
+-  Here, “closed” does not mean the standard input is an empty file;
++  
+   it means that standard input is not open at all, to any file.</li>
+ 
+ <li>Same as before, except run the program with standard
+@@ -340,7 +341,7 @@
+ <section>
+ <h2>Homework: Scripting in the shell</h2>
+ 
+-<p>For the homework assume you’re in the standard C or <a href="http://en.wikipedia.org/wiki/POSIX">POSIX</a> <a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap07.html#tag_07">locale</a>. The
++
+ shell command <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/locale.html"><samp>locale</samp></a>
+ should output <samp>LC_CTYPE="C"</samp>
+ or <samp>LC_CTYPE="POSIX"</samp>. If it doesn’t, use the following
+@@ -373,15 +374,15 @@
+ outputs (in particular, how its output differs from that of the
+ previous command), and why.</p>
+ 
+-<pre><samp>tr -c 'A-Za-z' '[\n*]'
+-tr -cs 'A-Za-z' '[\n*]'
+-tr -cs 'A-Za-z' '[\n*]' | sort
+-tr -cs 'A-Za-z' '[\n*]' | sort -u
+-tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - sorted.words
+-tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -23 - sorted.words
++
++
++
++
++
++
+ </samp></pre>
+ 
+-<p>Let’s take the last command
++
+ as the crude implementation of an
+   English spelling checker.
+   This implementation mishandles the input file <samp>sorted.words</samp>!
+@@ -440,7 +441,7 @@
+ <footer>
+ <hr>
+ <small>
+- © 2005, 2007–2020
++
+  <a href="https://web.cs.ucla.edu/classes/fall20/cs97-1/mail-eggert.html">Paul Eggert</a>, Steve
+  VanDeBogart, and Lei Zhang.
+  See <a href="https://web.cs.ucla.edu/classes/fall20/cs97-1/copyright.html">copying rules</a>.<br>
+@@ -453,4 +454,4 @@
+ 
+ 
+ <!-- end of HTML resource -->
+-</body></html>
+\ No newline at end of file
++</body></html>

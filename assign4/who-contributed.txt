@@ -1,0 +1,10 @@
+I used git grep "Even newspaper" command instead of git log | grep "Even newspaper",
+since it searches through the source code. This command finds the statement,
+"Even newspaper reports present contradictory information," and tells me which
+file the line exists in. Now, I can use git blame (file), to annotate the file
+with the author and time stamp of each line. I also pipelined it into
+grep "Even newspaper". The complete command was
+git blame northamerica | grep "Even newspaper" .
+(Paul Eggert 2013-09-02 08:09:06 -0700  890)
+This tells me that Paul Eggert added this line to the northamerica source file
+on September 9, 2013 at 8:09:06 in the UTC -0700 time zone. 

@@ -1,0 +1,21 @@
+Questions in Exercise 2.1
+Lisp expression for determining whether it fits
+(< (expt 2 64) (expt 2 (expt 3 4)))
+
+Typing C-h k C-h k
+This shows the description of the keystroke C-h k, which when pressed before another keystroke,
+describes what that keystroke does. 
+
+Typing C-h k M-SPC
+This shows the description of what happens when pressing M-SPC. This happens because the keystroke beforehand,
+C-h k, shows the description of the keystroke following it.
+
+Invoking randline.py on /dev/null
+It says that it can't index over empty sequence, since there are no lines in a null file.
+
+Invoking randline.py with Python 3
+The syntax of python2 and python3 are different, so therefore a python2 script can't be run on python3.
+
+When my shuf.py script is invoked with Python 2 instead of Python 3, it still functions as it should because
+Python 3 is compatible with Python 2 syntax, but the reverse isn't true.
+

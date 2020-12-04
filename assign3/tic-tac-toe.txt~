@@ -1,0 +1,175 @@
+call npx create-react-app [name] to download packages for React
+
+call npm start within the folder of the project to start a local environment in 
+browser
+
+renderSquare(i) returns a square with property "value" with the number i, and 
+it can be called by the Sqaure React component by using this.props.value; 
+all the squares in the boad are now numbered 0-8
+
+added onClick to what is returned by the button "square", creating a method 
+which recieves no arguments and returns an alert when prompted with a click on 
+a square; don't forget to include the () => when declaring the function, 
+or it will always show up without being prompted
+<button className="square" onClick={() => alert('click')}>
+    {this.props.value}
+</button>
+
+to remember what interactions have occured in the past, use the component state;
+call it using this.state; to reassign this.state property, use this.setState()
+<button
+className="square"
+onClick={() => this.setState({value: 'X'})}
+>
+{this.state.value}
+</button>
+
+when defining properties of an object, use : not =, and have commas in between 
+each property assignment
+
+need to include "super(props);" when defining constructor for subclass;
+basically always include it in the constructor definition
+
+onClick registers whenever the button element is presed; for the example of the 
+render section of square, it changes the value of this.state.value 
+(value component of the state property object) to be X, 
+and then returns that value
+- onClick={() => this.setState({value: 'X'})}
+
+adding constructor for the Board component, has a state object which and 
+a 1 x 9 array ,which is initialized to all null values (empty), 
+call "Array(9).fill(null)"
+
+edited renderSquare function to change the square value to the corresponding 
+value in the this.state.squares array from what used to be the index
+renderSquare(i) {
+return <Square value={this.state.squares[i]} />;
+}
+
+instead of having each square keep track of the state of the game, the board 
+will do it since the state is dependent not only on that current square, 
+but the others as well
+renderSquare(i) {
+return (
+  <Square
+    value={this.state.squares[i]}
+    onClick={() => this.handleClick(i)}
+  />
+);
+}
+
+in the method renderSquare(i) in the Board class, it has two props,
+onClick and value, where onClick is only called when sqaure.onClick is called, 
+and value can be called the with the dot method
+
+the props are private to the classes which they are defined in, 
+o the Board class cannot access change its own state property; 
+get around this by passing a function to the Square from the Board 
+and having Square call the function
+
+the workaround can be seen in the renderSquare method and Square class, 
+where when a square is clicked on, it called the "this.props.onClick" property 
+which was defined in the renderSquare method, which then calls the 
+this.handleClick method, the eventual function which will allow me 
+to alter the state of the board from a click of a square
+- onClick={() => this.props.onClick()} (in square class)
+- onClick={() => this.handleClick(i)} (in board class)
+
+
+within the handleClick(i) method in the Board class, a variables named squares 
+is declared from the squares array in the state object ( using .slice() ), 
+and the index i of the array is set to X, and then it is updated for 
+the Board squares' array by using the setState command to define it as 
+the recently updated one with a new 'X'
+
+when using only a render method in a class, declare a function component 
+instead of a function, which are passed props as input and do the same as 
+before, removed square class due to this reason
+
+to alternate turns, create a property of state prop called 'xIsNext', 
+which is notted each time that a valid click is registered
+- xIsNext: !this.state.xIsNext
+
+to write if else statements in one line, which is used for displaying which 
+players turn it is, syntax is as follows 
+"(conditional ? True case : False case)"
+
+using these if statements, update the current player's turn using the 
+xIsNext prop as a conditional, displaying whether it is X's or O's turn
+- status = 'Next PLayer: " + this.state.xIsNext ? 'X' : 'O'
+
+to call upon props of a class within its own methods, need to use "this." 
+syntax, such as this.state.xIsNext for the boolean for next player move
+handleClick(i) {
+const squares = this.state.squares.slice();
+squares[i] = this.state.xIsNext ? 'X' : 'O';
+this.setState({
+  squares: squares,
+  xIsNext: !this.state.xIsNext,
+});
+}
+
+Precompute all of the possible combinations to win in tic tac toe, put them 
+into a helper function called calculateWinner(square), which ouputs if a player 
+has won, and if so, which specific player is the winner; loops through all 
+possible combinations and sees if any on the board match those in the predefined
+winning combinations
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
+
+added if conditional to the handleClick function, which does nothing if there 
+is a winner already or the square is already defined to be an 'X' or 'O'
+- if (calculateWinner(squares) || squares[i]){
+      return;
+    }
+
+To make time travel possible/easier, don't modify the actual component, but 
+instead create a new one and store the old one to be able to refer to it; make a
+new array called history where the previous squares will be stored, 
+each one differing by one move
+- history.concat([{squares: squares,}])
+- concat doesn't mutate original array, simply creates another instance which 
+has an additional element
+
+have game itself keep track of history instead of the the board, similar to 
+having squares not keep track of who's turn it is, declare it inside game class
+- history : [{squares: Array(9).fill(null)}]
+
+since the game now keeps track of the state whose turn it is and also the 
+history, the handleClick function is moved up to the parent of the Board Class, 
+which is the game class
+
+can utilize map function, to map from one form of data to another, which is used 
+to display the different steps in the history index as interactive buttons; 
+create lists using <li> in conjunction with <button>, and then when that step is
+pressed, it calls a function jumpTo which will change the board to represent 
+what it was at that turn
+
+utilize special characteristic of React called "keys", which are unique 
+identifiers for elements in a list, and they tell React whether it needs to 
+delete an element from memory, create a new one, 
+or transfer it over to the current one
+
+added a stepNumber variable to keep track of how many turns have passed,
+declared in the constructor of Game, iterated each time a square is clicked;
+change the board render to be this.state.stepNumber index instead of
+history.length-1, also set stepNumber to be the length of the history
+array, and not always iterate since it can be changed in a variety of ways
+

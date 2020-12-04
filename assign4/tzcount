@@ -1,0 +1,14 @@
+#!/bin/bash
+cat > stdin
+# saving the stdin to be resued again
+zones=("-12" "-11" "-10" "-09" "-08" "-07" "-06" "-05" "-04" "-03" "-02" "-01")
+zones+=("00" "+01" "+02" "+03" "+04" "+05" "+06" "+07" "+08" "+09" "+10" "+11" "+12" "+13" "+14")
+for i in ${zones[@]}
+do
+    t="\\${i}00"
+    txt="${i}00"
+    txt+=" $(grep "^Date:" stdin | grep -c "${t}$")"
+    echo $txt
+done
+
+
